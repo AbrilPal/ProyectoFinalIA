@@ -17,7 +17,7 @@ class Hoopers():
         self.b = Juego()
         #inicia Marta
         self.ia = Marta(self.b)
-        self.tablero = self.b.get_board()
+        self.tablero = self.b.getTablero()
         self.humano_jugador = 1 
         #posiciones de las fichas en el tablero
         self.fichas_jugador = self.b.getfichasJugador(self.tablero)
@@ -53,7 +53,7 @@ class Hoopers():
         pos_final.ficha_ = pos_inicial.ficha_
         pos_inicial.ficha_ = 0
         return True
-        
+ 
     def jugar(self):
         comenzar = True
         while comenzar:

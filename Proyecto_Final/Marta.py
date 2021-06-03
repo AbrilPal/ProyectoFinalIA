@@ -82,20 +82,20 @@ class Marta():
         humano_jugador = self.tablero.getfichasMarta(tablero)
 
         # se recorre todo el tablero buscando piezas para evaluar la distancia que hay entre la pieza y la meta y obtener un valor max o min
-        for col in range(10):
-            for row in range(10):
+        for columna in range(10):
+            for fila in range(10):
                 
                 # si las piezas son blancas se maximiza la distancia para obtener el mejor resultado
-                if tablero[row][col].ficha_ == 1:
-                    d = [math.sqrt((end.pos[0] - row)**2 + (end.pos[1] - col)**2) for end in humano_marta if end.ficha_ != 1]
+                if tablero[fila][columna].ficha_ == 1:
+                    d = [math.sqrt((end.pos[0] - fila)**2 + (end.pos[1] - columna)**2) for end in humano_marta if end.ficha_ != 1]
                     if len(d):
                         resultado -= max(d)
                     else:
                         resultado -= -100    
                 
                 # si las piezas son negras se minimiza la distancia para obtener el mejor resultado
-                if tablero[row][col].ficha_ == 2:
-                    d = [math.sqrt((end.pos[0] - row)**2 + (end.pos[1] - col)**2) for end in humano_jugador if end.ficha_ != 2]
+                if tablero[fila][columna].ficha_ == 2:
+                    d = [math.sqrt((end.pos[0] - fila)**2 + (end.pos[1] - columna)**2) for end in humano_jugador if end.ficha_ != 2]
                     if len(d):
                         resultado += min(d)
                     else:
@@ -110,16 +110,16 @@ class Marta():
     def get_possible_moves(self, player, tablero) :
         moves = [] 
         # se recorre todo el tablero para ubicar todas las piezas del jugador
-        for col in range(10):
-            for row in range(10):
+        for columna in range(10):
+            for fila in range(10):
                 # si en la posicion del tablero encuentra una pieza del jugador determina todas los posibles saltos que puede dar
-                if tablero[row][col].ficha_ == player:
-                    moves.append([tablero[row][col], self.possible_moves(row,col, tablero)])
+                if tablero[fila][columna].ficha_ == player:
+                    moves.append([tablero[fila][columna], self.possible_moves(fila,columna, tablero)])
 
         return moves
 
 
-    def possible_moves(self, row, col, tablero, new_mov=None, first_salt=True):
+    def possible_moves(self, fila, columna, tablero, new_mov=None, first_salt=True):
         
         if new_mov is None:
             new_mov = []
@@ -129,12 +129,12 @@ class Marta():
             for j in range(-1, 2):
                 
                 # se determina si la casilla a donde se quiera saltar no sea la casilla desde donde se quiere saltar
-                if ((row + j) != row and (col + i) != col):
-                    new_row = row + j
-                    new_col = col + i
+                if ((fila + j) != fila and (columna + i) != columna):
+                    new_row = fila + j
+                    new_col = columna + i
 
                     # se valida que la posicion hasta donde quiera llegar esta dentro del tablero de 10x10
-                    if (self.tablero.valid_board_position(new_row, new_col) == True):
+                    if (self.tablero.validar(new_row, new_col) == True):
                         # si la casilla esta libre salta
                         if tablero[new_row][new_col].ficha_ == 0:  
                             # solo se permite mover a una casilla en blanco con un primer salto
@@ -143,7 +143,7 @@ class Marta():
                         
                         else: 
                             # si la casilla no está libre entonces evalua la casilla posterior para saltar la pieza                               
-                            if (self.tablero.valid_board_position(new_row + j, new_col + i) == True):
+                            if (self.tablero.validar(new_row + j, new_col + i) == True):
                                 # comprueba que no haya sido ingresado el destino para no duplicar posibles lugares a ocupar
                                 if not (tablero[new_row + j][new_col + i] in new_mov):
                                     # si la siguiente casilla a una ocupada esta libre hace un salto
