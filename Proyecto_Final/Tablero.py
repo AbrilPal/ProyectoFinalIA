@@ -10,7 +10,7 @@ class Hoopers():
 
     def __init__(self):
         #tiempo
-        self.time_limit = 40
+        self.limite = 40
         #profundidad
         self.depth = 4
         #inicia el tablero
@@ -30,6 +30,29 @@ class Hoopers():
         print("")
         print("♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠ Disfruta del juego :) ♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠")
         print("")
+
+    def marta_juega(self):
+        #limite
+        tiempo = time.time() + self.limite
+        #lo que marta retorna
+        val, jugada_marta_mejor = self.ia.minimax(self.depth, tiempo, self.tablero)
+        pos_i_marta = (jugada_marta_mejor[0][0],jugada_marta_mejor[0][1])
+        pos_f_marta = (jugada_marta_mejor[1][0],jugada_marta_mejor[1][1])
+        self.movimiento_cambio(pos_i_marta, pos_f_marta)
+        print()
+
+    def movimiento_cambio(self, A, B):
+        pos_inicial = self.b.getFicha(A[0], A[1], self.tablero)
+        pos_final = self.b.getFicha(B[0], B[1], self.tablero)    
+        #comprobar si es valido el movimiento
+        if pos_inicial.ficha_ == 0 or pos_final.ficha_ != 0:
+            print("")
+            print("Este movimiento es incorrecto")
+            print()
+            return False
+        pos_final.ficha_ = pos_inicial.ficha_
+        pos_inicial.ficha_ = 0
+        return True
         
     def jugar(self):
         comenzar = True
@@ -45,78 +68,31 @@ class Hoopers():
             if self.humano_jugador == 1:
                     turno = True
                     while (turno):
-                        
-                        mi = input ("Mover desde (fila, columna): \n")
-                        if (mi == 't'):
+                        print("posicion de la ficha que quieres mover")
+                        pos_i_marta = input ("fila,columna: ")
+                        if (pos_i_marta == 't'):
                             comenzar = False
                             break   
-                        mf = input ("Mover hasta (fila, columna): \n")
-                        if (mf == 't'):
+                        print("posicion final de la ficha seleccionada")
+                        pos_f_marta = input ("fila,columna: ")
+                        if (pos_f_marta == 't'):
                             comenzar = False
                             break   
-                        
-                        mix, miy = mi.split(',')
-                        mfx, mfy = mf.split(',')
-
-                        pi = (int(mix)-1, int(miy)-1)
-                        pf = (int(mfx)-1, int(mfy)-1)
-                                                
-                        # se mueve la pieza
-                        if (self.manual_move(pi,pf) == True):
+                        #separar cordenadas x y y para poder mover en tablero
+                        pos_i_x, pos_i_y = pos_i_marta.split(',')
+                        pos_f_x, pos_f_y = pos_f_marta.split(',')
+                        p_i = (int(pos_i_x)-1, int(pos_i_y)-1)
+                        p_f = (int(pos_f_x)-1, int(pos_f_y)-1)
+                        if (self.movimiento_cambio(p_i,p_f) == True):
                             turno = False
-                        
-                        # se establece el turno para el oponente
+                        #cambio de turno
                         self.humano_jugador = 2
-                        print()
-
             else:
-
-                # si el turno es de las negras entonces el agente de IA hace el movimiento
-                print('Turno de la compu, espere...')
-                self.agent_move()
-                # se establece el turno para el oponente
+                print()
+                print('Marta esta pensando su jugada')
+                self.marta_juega()
+                #cambio de turno
                 self.humano_jugador = 1
-
-
-    def manual_move(self, A, B):
-        
-        # obtiene las posiciones que seran intercambiadas
-        curr_pos = self.b.get_piece(A[0], A[1], self.tablero)
-        final_pos = self.b.get_piece(B[0], B[1], self.tablero)    
-        
-        # valida que se seleccione una ficha y que la casilla final este libre
-        if curr_pos.piece == 0 or final_pos.piece != 0:
-            print("\nMovimiento incorrecto\n")
-            return False
-
-        # mueve la ficha
-        final_pos.piece = curr_pos.piece
-        curr_pos.piece = 0
-        return True
-
-    
-    def agent_move(self):
-
-        # se obtiene el tiempo limite
-        time_to_move = time.time() + self.time_limit
-
-        # se obtiene el mejor movimiento evaluando con MINIMAX
-        val , best_move = self.ia.minimax(self.depth, time_to_move, self.tablero)
-
-        print("Movimiento calculado")
-        
-        # se obtiene el mejor movimiento
-        mi = (best_move[0][0],best_move[0][1])
-        mf = (best_move[1][0],best_move[1][1])
-
-        # se mueve la pieza
-        self.manual_move(mi, mf)
-        print("Movimiento de la computadora (fila, columna) desde " 
-                +  str((mi[0] + 1, mi[1] + 1)) + ' hasta ' 
-                +  str((mf[0] + 1, mf[1] + 1)))
-        print()    
-
-
 if __name__ == "__main__":
-    game = Hoopers()
-    game.jugar() # inicia el juego
+    juego_comienza = Hoopers()
+    juego_comienza.jugar() 

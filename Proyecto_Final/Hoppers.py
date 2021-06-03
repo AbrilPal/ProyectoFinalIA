@@ -16,13 +16,13 @@ class Juego():
             for col in range(10):
                 pos = (row, col)
                 if row + col < 5:
-                    piece = 2    
+                    ficha_ = 2    
                 elif row + col > 13:
-                    piece = 1
+                    ficha_ = 1
                 else:
-                    piece = 0
+                    ficha_ = 0
                 
-                tablero[row][col] = type('Piece', (object,),{'pos': pos, 'piece': piece})()#Piece(row, col)  # la pieza puede ser blanca, negra, o ninguna
+                tablero[row][col] = type('Piece', (object,),{'pos': pos, 'ficha_': ficha_})()#Piece(row, col)  # la pieza puede ser blanca, negra, o ninguna
                 
         return tablero
 
@@ -30,16 +30,16 @@ class Juego():
     def getfichasJugador(self, tablero):
         # retorna las posiciones en el tablero en donde se inician las piezas negras
         return [element for row in tablero
-                    for element in row if element.piece == 2]
+                    for element in row if element.ficha_ == 2]
 
 
     def getfichasMarta(self, tablero):
         # retorna las posiciones en el tablero en donde se inician las piezas blancas
         return [element for row in tablero
-                    for element in row if element.piece == 1]
+                    for element in row if element.ficha_ == 1]
 
 
-    def get_piece(self, row, col, tablero):
+    def getFicha(self, row, col, tablero):
         # retorna una pieza del tablero.
         return tablero[row][col]
 
@@ -48,9 +48,9 @@ class Juego():
         # dibuja el tablero en consola
         for i in range(0, 10):
             for j in range(0, 10):
-                p = tablero[i][j].piece
+                p = tablero[i][j].ficha_
                 if (p ==1 or p ==2):
-                    print('{},'.format('☺' if (tablero[i][j].piece == 1) else '♥'), end=" ")
+                    print('{},'.format('☺' if (tablero[i][j].ficha_ == 1) else '♥'), end=" ")
                 else: 
                     print('{},'.format(' '), end=" ")
             print()
@@ -62,9 +62,9 @@ class Juego():
         black_home = self.getfichasJugador(tablero)
         withe_home = self.getfichasMarta(tablero)
         # valida que no haya ganador
-        if all(win.piece == 1 for win in black_home):
+        if all(win.ficha_ == 1 for win in black_home):
             return 1
-        elif all(win.piece == 2 for win in withe_home):
+        elif all(win.ficha_ == 2 for win in withe_home):
             return 2
         else:
             return None
