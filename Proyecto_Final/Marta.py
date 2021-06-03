@@ -17,13 +17,13 @@ class Marta():
         for columna in range(10):
             for fila in range(10):
                 if tablero[fila][columna].ficha_ == 2:
-                    valor_jugada = [math.factorial((math.fabs(end.pos[0] - fila) + (end.pos[1] - columna)**2)) for end in humano_jugador if end.ficha_ != 2]
+                    valor_jugada = [math.factorial((math.fabs(f.pos[0] - fila) + (f.pos[1] - columna)**2)) for f in humano_jugador if f.ficha_ != 2]
                     if len(valor_jugada):
                         resultado += min(valor_jugada)
                     else:
                         resultado += -1000
                 if tablero[fila][columna].ficha_ == 1:
-                    valor_jugada = [math.factorial((math.fabs(end.pos[0] - fila)**2 + (end.pos[1] - columna)**2)) for end in humano_marta if end.ficha_ != 1]
+                    valor_jugada = [math.factorial((math.fabs(f.pos[0] - fila)**2 + (f.pos[1] - columna)**2)) for f in humano_marta if f.ficha_ != 1]
                     if len(valor_jugada):
                         resultado -= max(valor_jugada)
                     else:
