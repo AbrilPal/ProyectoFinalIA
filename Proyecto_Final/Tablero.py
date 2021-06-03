@@ -9,56 +9,50 @@ import time
 class Hoopers():
 
     def __init__(self):
-
-        # tiempo limite y profundidad
-        self.time_limit = 30
-        self.depth = 3
-
-        # se carga el tablero y el agente para jugar
+        #tiempo
+        self.time_limit = 40
+        #profundidad
+        self.depth = 4
+        #inicia el tablero
         self.b = Juego()
+        #inicia Marta
         self.ia = Marta(self.b)
-
-        # se crea un tablero inicial y se establece que las blancas inician
-        self.board = self.b.get_board()
-        self.current_player = 1 #blancas inician
-
-        # se obtienen las posiciones iniciales para blancas y negras
-        self.black_home = self.b.get_black_home(self.board)
-        self.withe_home = self.b.get_white_home(self.board)
-
-        print("\n\nInician las blancas\n\n")
+        self.tablero = self.b.get_board()
+        self.humano_jugador = 1 
+        #posiciones de las fichas en el tablero
+        self.fichas_jugador = self.b.getfichasJugador(self.tablero)
+        self.fichas_marta = self.b.getfichasMarta(self.tablero)
+        print("")
+        print("Holi, inicias tu con las fichas ☺ (las de abajo) y Marta(inteligencia) con las fichas ♥ (las de arriba)")
+        print("El tablero comienza en (1,1) que es la esquina superior izquierda y llega a la esquina inferior derecha (10,10).")
+        print("solo debes ingresar la pisicion inicial y la posicion final, NO TODA LA CADENA")
+        print("Espero esto sea suficiente para ganar la clase‼")
+        print("")
+        print("♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠ Disfruta del juego :) ♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠")
+        print("")
         
-
-    def play_hooper(self):
-        play_game = True
-
-        # ciclo que mantiene el juego activo, se realiza una movida el jugador y una la computadora.
-        while play_game:
-
-            # dibuja en pantalla y obtiene un ganador para terminar el ciclo
-            self.b.draw_board(self.board)
-            self.result = self.b.get_winner(self.board)
-            
-            if (self.b.get_winner(self.board) == 1):
-                print("\nJuego Terminado, blancas ganan)")
-                break
-            
-            if (self.b.get_winner(self.board) == 2):
-                print("\nJuego Terminado, negras ganan)")
-                break
-            
-            # si el turno es de las blancas entonces solicita que se ingresen las posiciones desde y hasta donde se movera una pieza
-            if self.current_player == 1:
-                    is_move = True
-                    while (is_move):
+    def jugar(self):
+        comenzar = True
+        while comenzar:
+            self.b.mostrar_tablero(self.tablero)
+            self.resultado = self.b.ganador(self.tablero)
+            if (self.b.ganador(self.tablero) == 1):
+                print("\n ♪♫♪♫♪♫♪♫♪♫ GANASTE ♪♫♪♫♪♫♪♫♪♫")
+                quit()
+            if (self.b.ganador(self.tablero) == 2):
+                print("\n :( PERDISTE :(")
+                quit()
+            if self.humano_jugador == 1:
+                    turno = True
+                    while (turno):
                         
                         mi = input ("Mover desde (fila, columna): \n")
                         if (mi == 't'):
-                            play_game = False
+                            comenzar = False
                             break   
                         mf = input ("Mover hasta (fila, columna): \n")
                         if (mf == 't'):
-                            play_game = False
+                            comenzar = False
                             break   
                         
                         mix, miy = mi.split(',')
@@ -69,10 +63,10 @@ class Hoopers():
                                                 
                         # se mueve la pieza
                         if (self.manual_move(pi,pf) == True):
-                            is_move = False
+                            turno = False
                         
                         # se establece el turno para el oponente
-                        self.current_player = 2
+                        self.humano_jugador = 2
                         print()
 
             else:
@@ -81,14 +75,14 @@ class Hoopers():
                 print('Turno de la compu, espere...')
                 self.agent_move()
                 # se establece el turno para el oponente
-                self.current_player = 1
+                self.humano_jugador = 1
 
 
     def manual_move(self, A, B):
         
         # obtiene las posiciones que seran intercambiadas
-        curr_pos = self.b.get_piece(A[0], A[1], self.board)
-        final_pos = self.b.get_piece(B[0], B[1], self.board)    
+        curr_pos = self.b.get_piece(A[0], A[1], self.tablero)
+        final_pos = self.b.get_piece(B[0], B[1], self.tablero)    
         
         # valida que se seleccione una ficha y que la casilla final este libre
         if curr_pos.piece == 0 or final_pos.piece != 0:
@@ -107,7 +101,7 @@ class Hoopers():
         time_to_move = time.time() + self.time_limit
 
         # se obtiene el mejor movimiento evaluando con MINIMAX
-        val , best_move = self.ia.minimax(self.depth, time_to_move, self.board)
+        val , best_move = self.ia.minimax(self.depth, time_to_move, self.tablero)
 
         print("Movimiento calculado")
         
@@ -125,4 +119,4 @@ class Hoopers():
 
 if __name__ == "__main__":
     game = Hoopers()
-    game.play_hooper() # inicia el juego
+    game.jugar() # inicia el juego

@@ -11,14 +11,10 @@ class Juego():
 
 
     def get_board(self):
-        # se crea un tablero de 10x10, a cada tablero se le asigna una pieza inicial
-        
-        board = [[None] * 10 for _ in range(10)]
+        tablero = [[None] * 10 for _ in range(10)]
         for row in range(10):
             for col in range(10):
                 pos = (row, col)
-
-                # valores iniciales cuando se crea la pieza
                 if row + col < 5:
                     piece = 2    
                 elif row + col > 13:
@@ -26,45 +22,45 @@ class Juego():
                 else:
                     piece = 0
                 
-                board[row][col] = type('Piece', (object,),{'pos': pos, 'piece': piece})()#Piece(row, col)  # la pieza puede ser blanca, negra, o ninguna
+                tablero[row][col] = type('Piece', (object,),{'pos': pos, 'piece': piece})()#Piece(row, col)  # la pieza puede ser blanca, negra, o ninguna
                 
-        return board
+        return tablero
 
 
-    def get_black_home(self, board):
+    def getfichasJugador(self, tablero):
         # retorna las posiciones en el tablero en donde se inician las piezas negras
-        return [element for row in board
+        return [element for row in tablero
                     for element in row if element.piece == 2]
 
 
-    def get_white_home(self, board):
+    def getfichasMarta(self, tablero):
         # retorna las posiciones en el tablero en donde se inician las piezas blancas
-        return [element for row in board
+        return [element for row in tablero
                     for element in row if element.piece == 1]
 
 
-    def get_piece(self, row, col, board):
+    def get_piece(self, row, col, tablero):
         # retorna una pieza del tablero.
-        return board[row][col]
+        return tablero[row][col]
 
 
-    def draw_board(self, board):
+    def mostrar_tablero(self, tablero):
         # dibuja el tablero en consola
         for i in range(0, 10):
             for j in range(0, 10):
-                p = board[i][j].piece
+                p = tablero[i][j].piece
                 if (p ==1 or p ==2):
-                    print('{}|'.format('w' if (board[i][j].piece == 1) else 'b'), end=" ")
+                    print('{},'.format('☺' if (tablero[i][j].piece == 1) else '♥'), end=" ")
                 else: 
-                    print('{}|'.format(' '), end=" ")
+                    print('{},'.format(' '), end=" ")
             print()
         print()
 
 
-    def get_winner(self, board):
+    def ganador(self, tablero):
         # obtiene las posiciones iniciales de las piezas blancas que sirven para comprobar si ya las ocupo el equipo contrario
-        black_home = self.get_black_home(board)
-        withe_home = self.get_white_home(board)
+        black_home = self.getfichasJugador(tablero)
+        withe_home = self.getfichasMarta(tablero)
         # valida que no haya ganador
         if all(win.piece == 1 for win in black_home):
             return 1

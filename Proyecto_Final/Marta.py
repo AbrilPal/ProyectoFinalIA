@@ -8,16 +8,16 @@ import math
 
 class Marta():
 
-    def __init__(self, board):
-        self.board = board
+    def __init__(self, tablero):
+        self.tablero = tablero
         pass 
     
-    def minimax(self, depth, time_limit, board, alpha=float("-inf"), beta=float("inf"), maximizing=True):
+    def minimax(self, depth, time_limit, tablero, alpha=float("-inf"), beta=float("inf"), maximizing=True):
         node_option = None
         
         # valida que no haya llegado al ultimo nivel de profundidad, que se haya cumplido el tiempo o que haya un ganador.
-        if depth == 0 or time.time() > time_limit or self.board.get_winner(board):
-            return self.eval_fun(2, board), None
+        if depth == 0 or time.time() > time_limit or self.tablero.ganador(tablero):
+            return self.eval_fun(2, tablero), None
 
         # obtiene los posibles movimientos según se este maximizando o minimizando
         if maximizing:
@@ -25,13 +25,13 @@ class Marta():
             # como maximiza se setea el valor del nodo a menos infinito, mientras no se ha evaluado el nodo.
             node_value = float("-inf")
             # obtiene los posibles movimientos del jugador (maximiza para las negras)
-            possible_moves = self.get_possible_moves(2, board)
+            possible_moves = self.get_possible_moves(2, tablero)
         else:
 
             # como miminiza se setea el valor del nodo con infinito, mientras no se ha evaluado el nodo.
             node_value = float("inf")
             # obtiene los posibles movimientos del jugador (minimiza para las blancas)
-            possible_moves = self.get_possible_moves(1, board)
+            possible_moves = self.get_possible_moves(1, tablero)
 
         # Se recorren los posibles movimientos para calcular las jugadas.
         for move in possible_moves:
@@ -47,7 +47,7 @@ class Marta():
                 to.piece = piece
 
                 # llamada recursiva de la función MINMAX para minimizar la jugada del oponente. 
-                val, mov = self.minimax(depth - 1, time_limit, board, alpha, beta, not maximizing)
+                val, mov = self.minimax(depth - 1, time_limit, tablero, alpha, beta, not maximizing)
 
                 # regresa el movimiento luego de haber sido evaluado
                 to.piece = 0    
@@ -74,52 +74,52 @@ class Marta():
       
 
 
-    def eval_fun(self, piece, board):
+    def eval_fun(self, piece, tablero):
 
-        result = 0
+        resultado = 0
         # se obtienen los lugares finales para las piezas blancas y negras
-        black_home = self.board.get_black_home(board)
-        withe_home = self.board.get_white_home(board)
+        humano_marta = self.tablero.getfichasJugador(tablero)
+        humano_jugador = self.tablero.getfichasMarta(tablero)
 
         # se recorre todo el tablero buscando piezas para evaluar la distancia que hay entre la pieza y la meta y obtener un valor max o min
         for col in range(10):
             for row in range(10):
                 
                 # si las piezas son blancas se maximiza la distancia para obtener el mejor resultado
-                if board[row][col].piece == 1:
-                    d = [math.sqrt((end.pos[0] - row)**2 + (end.pos[1] - col)**2) for end in black_home if end.piece != 1]
+                if tablero[row][col].piece == 1:
+                    d = [math.sqrt((end.pos[0] - row)**2 + (end.pos[1] - col)**2) for end in humano_marta if end.piece != 1]
                     if len(d):
-                        result -= max(d)
+                        resultado -= max(d)
                     else:
-                        result -= -100    
+                        resultado -= -100    
                 
                 # si las piezas son negras se minimiza la distancia para obtener el mejor resultado
-                if board[row][col].piece == 2:
-                    d = [math.sqrt((end.pos[0] - row)**2 + (end.pos[1] - col)**2) for end in withe_home if end.piece != 2]
+                if tablero[row][col].piece == 2:
+                    d = [math.sqrt((end.pos[0] - row)**2 + (end.pos[1] - col)**2) for end in humano_jugador if end.piece != 2]
                     if len(d):
-                        result += min(d)
+                        resultado += min(d)
                     else:
-                        result += -100    
+                        resultado += -100    
                     
         if piece == 2:
-            result *= -1
+            resultado *= -1
 
-        return result
+        return resultado
 
     
-    def get_possible_moves(self, player, board) :
+    def get_possible_moves(self, player, tablero) :
         moves = [] 
         # se recorre todo el tablero para ubicar todas las piezas del jugador
         for col in range(10):
             for row in range(10):
                 # si en la posicion del tablero encuentra una pieza del jugador determina todas los posibles saltos que puede dar
-                if board[row][col].piece == player:
-                    moves.append([board[row][col], self.possible_moves(row,col, board)])
+                if tablero[row][col].piece == player:
+                    moves.append([tablero[row][col], self.possible_moves(row,col, tablero)])
 
         return moves
 
 
-    def possible_moves(self, row, col, board, new_mov=None, first_salt=True):
+    def possible_moves(self, row, col, tablero, new_mov=None, first_salt=True):
         
         if new_mov is None:
             new_mov = []
@@ -134,24 +134,24 @@ class Marta():
                     new_col = col + i
 
                     # se valida que la posicion hasta donde quiera llegar esta dentro del tablero de 10x10
-                    if (self.board.valid_board_position(new_row, new_col) == True):
+                    if (self.tablero.valid_board_position(new_row, new_col) == True):
                         # si la casilla esta libre salta
-                        if board[new_row][new_col].piece == 0:  
+                        if tablero[new_row][new_col].piece == 0:  
                             # solo se permite mover a una casilla en blanco con un primer salto
                             if (first_salt == True):
-                                new_mov.append(board[new_row][new_col])
+                                new_mov.append(tablero[new_row][new_col])
                         
                         else: 
                             # si la casilla no está libre entonces evalua la casilla posterior para saltar la pieza                               
-                            if (self.board.valid_board_position(new_row + j, new_col + i) == True):
+                            if (self.tablero.valid_board_position(new_row + j, new_col + i) == True):
                                 # comprueba que no haya sido ingresado el destino para no duplicar posibles lugares a ocupar
-                                if not (board[new_row + j][new_col + i] in new_mov):
+                                if not (tablero[new_row + j][new_col + i] in new_mov):
                                     # si la siguiente casilla a una ocupada esta libre hace un salto
-                                    if board[new_row + j][new_col + i].piece == 0:
-                                        new_mov.insert(0, board[new_row + j][new_col + i])  
+                                    if tablero[new_row + j][new_col + i].piece == 0:
+                                        new_mov.insert(0, tablero[new_row + j][new_col + i])  
 
                                         # se evalúa recursivamente si puede saltar otra pieza
-                                        self.possible_moves(board[new_row + j][new_col + i].pos[0], board[new_row + j][new_col + i].pos[1], board, new_mov, False)
+                                        self.possible_moves(tablero[new_row + j][new_col + i].pos[0], tablero[new_row + j][new_col + i].pos[1], tablero, new_mov, False)
         return new_mov
 
     
