@@ -16,10 +16,10 @@ class Juego():
         for fila in range(10):
             for columna in range(10):
                 pos = (fila, columna)
-                if fila + columna < 5:
-                    ficha_ = 2    
-                elif fila + columna > 13:
-                    ficha_ = 1
+                if fila + columna > 13:
+                    ficha_ = 1    
+                elif fila + columna < 5:
+                    ficha_ = 2
                 else:
                     ficha_ = 0
                 tablero[fila][columna] = type('Ficha', (object,),{'pos': pos, 'ficha_': ficha_})()
