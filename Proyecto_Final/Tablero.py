@@ -12,7 +12,7 @@ class Hoopers():
         #tiempo
         self.limite = 40
         #profundidad
-        self.depth = 4
+        self.profundida = 4
         #inicia el tablero
         self.b = Juego()
         #inicia Marta
@@ -35,7 +35,7 @@ class Hoopers():
         #limite
         tiempo = time.time() + self.limite
         #lo que marta retorna
-        val, jugada_marta_mejor = self.ia.minimax(self.depth, tiempo, self.tablero)
+        val, jugada_marta_mejor = self.ia.minimax(self.profundida, tiempo, self.tablero)
         pos_i_marta = (jugada_marta_mejor[0][0],jugada_marta_mejor[0][1])
         pos_f_marta = (jugada_marta_mejor[1][0],jugada_marta_mejor[1][1])
         self.movimiento_cambio(pos_i_marta, pos_f_marta)
@@ -88,7 +88,6 @@ class Hoopers():
                         #cambio de turno
                         self.humano_jugador = 2
             else:
-                print()
                 print('Marta esta pensando su jugada')
                 self.marta_juega()
                 #cambio de turno
