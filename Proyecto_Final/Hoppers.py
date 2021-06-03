@@ -6,7 +6,10 @@ import numpy as np
 
 class Juego():
     def validar(self, fila, columna):
-        return (False) if (fila <= 0 or fila > 9 or columna <= 0  or columna > 9) else True
+        if (fila <= 0 or fila > 9 or columna <= 0  or columna > 9):
+           return False
+        else:
+            return True
 
     def getTablero(self):
         tablero = [[None] * 10 for _ in range(10)]
