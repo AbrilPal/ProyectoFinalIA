@@ -7,12 +7,12 @@ import numpy as np
 class Juego():
     def validar(self, fila, columna):
         if (fila <= 0 or fila > 9 or columna <= 0  or columna > 9):
-           return False
+            return False
         else:
             return True
 
     def getTablero(self):
-        tablero = [[None] * 10 for _ in range(10)]
+        tablero = [[0] * 10 for _ in range(10)]
         for fila in range(10):
             for columna in range(10):
                 pos = (fila, columna)
